@@ -1,6 +1,8 @@
-const safeEval = require('safe-eval');
+import * as safeEval from 'safe-eval';
+import { TelegrafContext } from 'telegraf/typings/context';
 
-const {botName, commands} = require('./constants');
+import { botName, commands } from './constants';
+import { GetColorFunction } from './types';
 
 const commandsList = Object.values(commands);
 const stripOutCommandRegex = [
@@ -9,7 +11,7 @@ const stripOutCommandRegex = [
 ].join('|');
 
 
-const getColorGetterFunction = (botCtx) => {
+export const getColorGetterFunction = (botCtx: TelegrafContext): GetColorFunction => {
   const message = botCtx.message && botCtx.message.text;
 
   if (!message || typeof message !== 'string') {
@@ -26,5 +28,3 @@ const getColorGetterFunction = (botCtx) => {
 
   return func;
 }
-
-module.exports = {getColorGetterFunction};

@@ -1,9 +1,10 @@
-const fs = require('fs');
-const { Telegraf } = require('telegraf');
+import * as fs from 'fs';
+import { Telegraf } from 'telegraf';
+import { TelegrafContext } from 'telegraf/typings/context';
 
-const {commands} = require('./constants');
-const {getColorGetterFunction} = require('./helpers');
-const {generateImage} = require('./imageGeneration');
+import { commands, Origin } from './constants';
+import { getColorGetterFunction } from './helpers';
+import { generateImage } from './imageGeneration';
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -36,15 +37,15 @@ bot.start((ctx) => {
     Have fun :)
   `);
 });
- 
+
 bot.help((ctx) => {
   ctx.reply(helpText)
 });
 
-const handleDraw = async (botCtx, origin) => {
+const handleDraw = async (botCtx: TelegrafContext, origin?: Origin): Promise<void> => {
   const getColor = await getColorGetterFunction(botCtx);
   const imgFileName = await generateImage(getColor, origin);
-  await botCtx.replyWithPhoto({source: imgFileName});
+  await botCtx.replyWithPhoto({ source: imgFileName });
   fs.unlinkSync(imgFileName);
 };
 
@@ -53,9 +54,7 @@ bot.command(commands.draw, (ctx) => {
 });
 
 bot.command(commands.drawCenter, (ctx) => {
-  handleDraw(ctx, 'center').catch((e) => ctx.reply(e.message));
+  handleDraw(ctx, Origin.Center).catch((e) => ctx.reply(e.message));
 })
 
-bot.launch();
-
- 
+bot.launch().then(() => console.log('Bot started'));
