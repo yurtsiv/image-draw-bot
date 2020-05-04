@@ -2,17 +2,26 @@ import * as fs from 'fs';
 import { Telegraf } from 'telegraf';
 import { TelegrafContext } from 'telegraf/typings/context';
 
-import { commands, Origin } from './constants';
+import { commands, Origin, resolutions } from './constants';
 import { getColorGetterFunction } from './helpers';
 import { generateImage } from './imageGeneration';
+import { XY } from './types';
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 const helpText = `
 Commands:
 
-/draw - draw an image with origin located in the top left corner
-/draw_center - draw an image with origin located in the center (Cartesian coordinates)
+/draw - Draw an image with origin located in the top left corner
+/draw_center - Draw an image with origin located in the center (Cartesian coordinates)
+/draw_hd - Draw an image in HD
+/draw_center_hd - Draw an image in HD with Cartesian coordinates
+/draw_fhd - Draw an image in Full HD
+/draw_center_fhd - Draw an image in Full HD with Cartesian coordinates
+/draw_2k - Draw an image in 2K
+/draw_center_2k - Draw an image in 2K with Cartesian coordinates
+/draw_4k - Draw an image in 4K 
+/draw_center_4k - Draw an image in 4K with Cartesian coordinates
 
 For each command you need to supply a JavaScript function which takes x & y coordinates
 and returns RGB color for that pixel.
@@ -49,21 +58,48 @@ bot.help((ctx) => {
   ctx.reply(helpText);
 });
 
-const handleDraw = async (botCtx: TelegrafContext, origin?: Origin): Promise<void> => {
-  const getColor = getColorGetterFunction(botCtx);
-  const imageFileName = await generateImage(getColor, origin);
+const handleDraw = async (botCtx: TelegrafContext, origin?: Origin, resolution?: XY): Promise<void> => {
+  try {
+    const getColor = getColorGetterFunction(botCtx);
+    const imageFileName = await generateImage(getColor, origin, resolution);
 
-  await botCtx.replyWithDocument({ source: imageFileName })
+    await botCtx.replyWithDocument({ source: imageFileName })
 
-  fs.unlinkSync(imageFileName);
+    fs.unlinkSync(imageFileName);
+  } catch (e) {
+    botCtx.reply(e.message);
+  }
 }
 
-bot.command(commands.draw, (ctx) => {
-  handleDraw(ctx).catch((e) => ctx.reply(e.message));
-});
+bot.command(commands.draw, (ctx) => handleDraw(ctx));
+bot.command(commands.drawCenter, (ctx) => handleDraw(ctx, Origin.Center));
 
-bot.command(commands.drawCenter, (ctx) => {
-  handleDraw(ctx, Origin.Center).catch((e) => ctx.reply(e.message));
-})
+bot.command(commands.drawHd, (ctx) =>
+  handleDraw(ctx, Origin.TopLeft, resolutions.hd)
+);
+bot.command(commands.drawCenterHd, (ctx) =>
+  handleDraw(ctx, Origin.Center, resolutions.hd)
+);
+
+bot.command(commands.drawFhd, (ctx) =>
+  handleDraw(ctx, Origin.TopLeft, resolutions.fhd)
+);
+bot.command(commands.drawCenterFhd, (ctx) =>
+  handleDraw(ctx, Origin.Center, resolutions.fhd)
+);
+
+bot.command(commands.draw2k, (ctx) =>
+  handleDraw(ctx, Origin.TopLeft, resolutions['2k'])
+);
+bot.command(commands.drawCenter2k, (ctx) =>
+  handleDraw(ctx, Origin.Center, resolutions['2k'])
+);
+
+bot.command(commands.draw4k, (ctx) =>
+  handleDraw(ctx, Origin.TopLeft, resolutions['4k'])
+);
+bot.command(commands.drawCenter4k, (ctx) =>
+  handleDraw(ctx, Origin.Center, resolutions['4k'])
+);
 
 bot.launch().then(() => console.log('Bot started'));

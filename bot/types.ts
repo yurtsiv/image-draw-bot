@@ -1,7 +1,4 @@
-export interface XY {
-  x: number;
-  y: number;
-}
+export type XY = [number, number]
 
 export interface RGB {
   r: number;
