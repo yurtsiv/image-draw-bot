@@ -53,7 +53,7 @@ const handleDraw = async (botCtx: TelegrafContext, origin?: Origin): Promise<voi
   const getColor = getColorGetterFunction(botCtx);
   const imageFileName = await generateImage(getColor, origin);
 
-  await botCtx.replyWithPhoto({ source: imageFileName })
+  await botCtx.replyWithDocument({ source: imageFileName })
 
   fs.unlinkSync(imageFileName);
 }
