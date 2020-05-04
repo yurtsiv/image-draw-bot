@@ -1,14 +1,14 @@
-const fs = require('fs');
-const {createCanvas} = require('canvas');
+import * as fs from 'fs';
+import { createCanvas } from 'canvas';
 
 const imageSize = {
   x: 256,
   y: 256
 };
 
-const transformCoords = (x, y, origin) => {
+const transformCoords = (x: number, y: number, origin: string): { x: number, y: number } => {
   if (origin === 'top-left') {
-    return {x, y};
+    return { x, y };
   }
 
   if (origin === 'center') {
@@ -22,14 +22,14 @@ const transformCoords = (x, y, origin) => {
   }
 }
 
-const generateImage = (getColor, origin = 'top-left') => {
+export const generateImage = (getColor: Function, origin: string = 'top-left'): Promise<string> => {
   const canvas = createCanvas(imageSize.x, imageSize.y);
   const canvasCtx = canvas.getContext('2d')
 
   for (let x = 0; x < imageSize.x; x++) {
     for (let y = 0; y < imageSize.y; y++) {
       const tCoords = transformCoords(x, y, origin);
-      const {r,g,b} = getColor(tCoords.x, tCoords.y);
+      const { r, g, b } = getColor(tCoords.x, tCoords.y);
 
       canvasCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
       canvasCtx.fillRect(x, y, 1, 1);
@@ -40,13 +40,11 @@ const generateImage = (getColor, origin = 'top-left') => {
   const buffer = Buffer.from(dataUrl, 'base64');
   const fileName = `${Date.now()}.png`;
 
-  return new Promise((res, rej) => {
+  return new Promise((resolve, reject) => {
     fs.writeFile(fileName, buffer, (err) => {
-      if (err) rej(err);
+      if (err) reject(err);
 
-      res(fileName);
+      resolve(fileName);
     });
   });
 }
-
-module.exports = {generateImage};
