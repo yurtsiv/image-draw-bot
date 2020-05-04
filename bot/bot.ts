@@ -9,45 +9,54 @@ import { generateImage } from './imageGeneration';
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 const helpText = `
-Guide:
+Commands:
 
-Use /draw command to generate a \`256x256\` image
-by supplying a JS function which takes \`(x, y)\`
-corrdinates and returns RGB color for that pixel.
+/draw - draw an image with origin located in the top left corner
+/draw_center - draw an image with origin located in the center (Cartesian coordinates)
 
-Example:
+For each command you need to supply a JavaScript function which takes x & y coordinates
+and returns RGB color for that pixel.
 
-/draw (x, y) => {
-  ...whatever JS code...
+Examples:
 
+/draw (x, y) => ({
+  r:  Math.floor(Math.pow(Math.sin(x / y), 2) * 500),
+  g: 0,
+  b: 0
+})
+
+/draw_center (x, y) => {
+  const gray = (x * x + y * y) > 1000 ? 0 : 255;
   return {
-    r: ...,
-    g: ...,
-    b: ...
-  } 
+    r: gray,
+    g: gray,
+    b: gray
+  }
 }
 `;
 
+const startText = `
+Hello, ImageDrawBot here!\n
+Use me to generate random images based on a function you supply.\n
+See /help for more details and have fun!
+`
 
 bot.start((ctx) => {
-  ctx.reply(`
-    Hello, ImageDrawBot here!\n
-    Use me to generate random images based on a function you supply.\n
-    See \`/help\` for more details.\n\n
-    Have fun :)
-  `);
+  ctx.reply(startText);
 });
 
 bot.help((ctx) => {
-  ctx.reply(helpText)
+  ctx.reply(helpText);
 });
 
 const handleDraw = async (botCtx: TelegrafContext, origin?: Origin): Promise<void> => {
-  const getColor = await getColorGetterFunction(botCtx);
-  const imgFileName = await generateImage(getColor, origin);
-  await botCtx.replyWithPhoto({ source: imgFileName });
-  fs.unlinkSync(imgFileName);
-};
+  const getColor = getColorGetterFunction(botCtx);
+  const imageFileName = await generateImage(getColor, origin);
+
+  await botCtx.replyWithPhoto({ source: imageFileName })
+
+  fs.unlinkSync(imageFileName);
+}
 
 bot.command(commands.draw, (ctx) => {
   handleDraw(ctx).catch((e) => ctx.reply(e.message));

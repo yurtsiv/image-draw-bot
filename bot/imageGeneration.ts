@@ -43,7 +43,7 @@ export const generateImage = (
 
   const dataUrl = canvas.toDataURL().replace(/^data:image\/\w+;base64,/, "");
   const buffer = Buffer.from(dataUrl, 'base64');
-  const fileName = `${Date.now()}.png`;
+  const fileName = `${process.env.PWD}/${Date.now()}.png`;
 
   return new Promise((resolve, reject) => {
     fs.writeFile(fileName, buffer, (err) => {

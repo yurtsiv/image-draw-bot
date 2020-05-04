@@ -8,7 +8,9 @@ const commandsList = Object.values(commands);
 const stripOutCommandRegex = [
   ...commandsList.map(c => `/${c}@${botName}`),
   ...commandsList.map(c => `/${c}`)
-].join('|');
+]
+  .sort((s1, s2) => s2.length - s1.length)
+  .join('|');
 
 
 export const getColorGetterFunction = (botCtx: TelegrafContext): GetColorFunction => {
@@ -19,7 +21,6 @@ export const getColorGetterFunction = (botCtx: TelegrafContext): GetColorFunctio
   }
 
   const code = message.replace(new RegExp(stripOutCommandRegex), '');
-
   const func = safeEval(code);
 
   if (typeof func !== 'function') {
