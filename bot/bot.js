@@ -1,4 +1,8 @@
-const { Telegraf } = require('telegraf')
+const fs = require('fs');
+const { Telegraf } = require('telegraf');
+
+const {getColorGetterFunction} = require('./helpers');
+const {generateImage} = require('./imageGeneration');
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -22,6 +26,7 @@ Example:
 }
 `;
 
+
 bot.start((ctx) => {
   ctx.reply(`
     Hello, ImageDrawBot here!\n
@@ -35,12 +40,17 @@ bot.help((ctx) => {
   ctx.reply(helpText)
 });
 
-bot.command('draw', (ctx) => {
-  // const code = ctx?.message?.text;
+const handleDraw = async (botCtx) => {
+  const getColor = await getColorGetterFunction(botCtx);
+  const imgFileName = await generateImage(getColor);
+  await botCtx.replyWithPhoto({source: imgFileName});
+  fs.unlinkSync(imgFileName);
+};
 
-  // const canvas = createCanvas(200, 200)
-  // const ctx = canvas.getContext('2d')
+bot.command('draw', (ctx) => {
+  handleDraw(ctx).catch((e) => ctx.reply(e.message));
 });
 
-bot.launch()
+bot.launch();
+
  
