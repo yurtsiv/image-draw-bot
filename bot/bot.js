@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Telegraf } = require('telegraf');
 
+const {commands} = require('./constants');
 const {getColorGetterFunction} = require('./helpers');
 const {generateImage} = require('./imageGeneration');
 
@@ -40,17 +41,20 @@ bot.help((ctx) => {
   ctx.reply(helpText)
 });
 
-const handleDraw = async (botCtx) => {
+const handleDraw = async (botCtx, origin) => {
   const getColor = await getColorGetterFunction(botCtx);
-  const imgFileName = await generateImage(getColor);
+  const imgFileName = await generateImage(getColor, origin);
   await botCtx.replyWithPhoto({source: imgFileName});
   fs.unlinkSync(imgFileName);
 };
 
-bot.command('draw', (ctx) => {
-  console.log(ctx.message.entities);
+bot.command(commands.draw, (ctx) => {
   handleDraw(ctx).catch((e) => ctx.reply(e.message));
 });
+
+bot.command(commands.drawCenter, (ctx) => {
+  handleDraw(ctx, 'center').catch((e) => ctx.reply(e.message));
+})
 
 bot.launch();
 

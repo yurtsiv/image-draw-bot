@@ -1,5 +1,14 @@
 const safeEval = require('safe-eval');
 
+const {botName, commands} = require('./constants');
+
+const commandsList = Object.values(commands);
+const stripOutCommandRegex = [
+  ...commandsList.map(c => `/${c}@${botName}`),
+  ...commandsList.map(c => `/${c}`)
+].join('|');
+
+
 const getColorGetterFunction = (botCtx) => {
   const message = botCtx.message && botCtx.message.text;
 
@@ -7,9 +16,7 @@ const getColorGetterFunction = (botCtx) => {
     throw new Error('Invalid code provided. See /help');
   }
 
-  const code = message
-    .replace('/draw@ImageDrawBot', '')
-    .replace('/draw', '');
+  const code = message.replace(new RegExp(stripOutCommandRegex), '');
 
   const func = safeEval(code);
 
