@@ -48,6 +48,7 @@ const handleDraw = async (botCtx) => {
 };
 
 bot.command('draw', (ctx) => {
+  console.log(ctx.message.entities);
   handleDraw(ctx).catch((e) => ctx.reply(e.message));
 });
 

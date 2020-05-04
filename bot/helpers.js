@@ -7,7 +7,10 @@ const getColorGetterFunction = (botCtx) => {
     throw new Error('Invalid code provided. See /help');
   }
 
-  const code = message.replace('/draw', '');
+  const code = message
+    .replace('/draw@ImageDrawBot', '')
+    .replace('/draw', '');
+
   const func = safeEval(code);
 
   if (typeof func !== 'function') {
