@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/yurtsiv/image-draw-bot#readme",
   "dependencies": {
-    "safe-eval": "^0.4.1"
+    "canvas": "^2.6.1",
+    "safe-eval": "^0.4.1",
+    "telegraf": "^3.38.0"
   }
 }
