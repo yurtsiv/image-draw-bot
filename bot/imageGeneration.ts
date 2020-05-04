@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import { createCanvas } from 'canvas';
+import { createCanvas, PNGStream } from 'canvas';
+
 import { XY, GetColorFunction } from './types';
 import { Origin, resolutions } from './constants';
 
@@ -25,7 +25,7 @@ export const generateImage = (
   getColor: GetColorFunction,
   origin: Origin = Origin.TopLeft,
   imageSize: XY = resolutions.default
-): Promise<string> => {
+): PNGStream => {
   const canvas = createCanvas(imageSize[0], imageSize[1]);
   const canvasCtx = canvas.getContext('2d')
 
@@ -39,15 +39,5 @@ export const generateImage = (
     }
   }
 
-  const dataUrl = canvas.toDataURL().replace(/^data:image\/\w+;base64,/, "");
-  const buffer = Buffer.from(dataUrl, 'base64');
-  const fileName = `${process.env.PWD}/${Date.now()}.png`;
-
-  return new Promise((resolve, reject) => {
-    fs.writeFile(fileName, buffer, (err) => {
-      if (err) reject(err);
-
-      resolve(fileName);
-    });
-  });
+  return canvas.createPNGStream();
 }

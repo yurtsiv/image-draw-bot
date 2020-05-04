@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { Telegraf } from 'telegraf';
 import { TelegrafContext } from 'telegraf/typings/context';
 
@@ -61,11 +60,12 @@ bot.help((ctx) => {
 const handleDraw = async (botCtx: TelegrafContext, origin?: Origin, resolution?: XY): Promise<void> => {
   try {
     const getColor = getColorGetterFunction(botCtx);
-    const imageFileName = await generateImage(getColor, origin, resolution);
+    const imageFileStream = generateImage(getColor, origin, resolution);
 
-    await botCtx.replyWithDocument({ source: imageFileName })
-
-    fs.unlinkSync(imageFileName);
+    await botCtx.replyWithDocument({
+      source: imageFileStream,
+      filename: 'ImageDrawBot.png'
+    });
   } catch (e) {
     botCtx.reply(e.message);
   }
