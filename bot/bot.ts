@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import { Telegraf } from 'telegraf';
+import { TelegrafContext } from 'telegraf/typings/context';
 
-import { commands } from './constants';
+import { commands, Origin } from './constants';
 import { getColorGetterFunction } from './helpers';
 import { generateImage } from './imageGeneration';
 
@@ -41,7 +42,7 @@ bot.help((ctx) => {
   ctx.reply(helpText)
 });
 
-const handleDraw = async (botCtx, origin?) => {
+const handleDraw = async (botCtx: TelegrafContext, origin?: Origin): Promise<void> => {
   const getColor = await getColorGetterFunction(botCtx);
   const imgFileName = await generateImage(getColor, origin);
   await botCtx.replyWithPhoto({ source: imgFileName });
@@ -53,7 +54,7 @@ bot.command(commands.draw, (ctx) => {
 });
 
 bot.command(commands.drawCenter, (ctx) => {
-  handleDraw(ctx, 'center').catch((e) => ctx.reply(e.message));
+  handleDraw(ctx, Origin.Center).catch((e) => ctx.reply(e.message));
 })
 
 bot.launch().then(() => console.log('Bot started'));

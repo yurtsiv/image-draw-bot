@@ -1,17 +1,19 @@
 import * as fs from 'fs';
 import { createCanvas } from 'canvas';
+import { XY, GetColorFunction } from './types';
+import { Origin } from './constants';
 
-const imageSize = {
+const imageSize: XY = {
   x: 256,
   y: 256
 };
 
-const transformCoords = (x: number, y: number, origin: string): { x: number, y: number } => {
-  if (origin === 'top-left') {
+const transformCoords = (x: number, y: number, origin: Origin): XY => {
+  if (origin === Origin.TopLeft) {
     return { x, y };
   }
 
-  if (origin === 'center') {
+  if (origin === Origin.Center) {
     const halfX = imageSize.x / 2;
     const halfY = imageSize.y / 2;
 
@@ -22,7 +24,10 @@ const transformCoords = (x: number, y: number, origin: string): { x: number, y: 
   }
 }
 
-export const generateImage = (getColor: Function, origin: string = 'top-left'): Promise<string> => {
+export const generateImage = (
+  getColor: GetColorFunction,
+  origin: Origin = Origin.TopLeft
+): Promise<string> => {
   const canvas = createCanvas(imageSize.x, imageSize.y);
   const canvasCtx = canvas.getContext('2d')
 
