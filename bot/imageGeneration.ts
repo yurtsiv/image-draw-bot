@@ -16,7 +16,7 @@ const transformCoords = (x: number, y: number, origin: Origin, imageSize: XY): X
 
     return [
       x >= halfX ? x - halfX : -(halfX - x),
-      y >= halfY ? y - halfY : halfY - y
+      y >= halfY ? -(y - halfY) : halfY - y
     ]
   }
 }
