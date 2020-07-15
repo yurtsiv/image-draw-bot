@@ -1,6 +1,29 @@
 # ImageDrawBot
 
-A Telegram bot for generating images based on a supplied function.
+A Telegram bot for generating images based on a supplied (JavaScript) function, 
+which returns RGB color for each pixel coordinate.
+
+## Commands
+
+`/draw` - Draw an image with origin located in the top left corner
+
+`/draw_center` - Draw an image with origin located in the center (Cartesian coordinates)
+
+`/draw_hd` - Draw an image in HD
+
+`/draw_center_hd` - Draw an image in HD with Cartesian coordinates
+
+`/draw_fhd` - Draw an image in Full HD
+
+`/draw_center_fhd` - Draw an image in Full HD with Cartesian coordinates
+
+`/draw_2k` - Draw an image in 2K
+
+`/draw_center_2k` - Draw an image in 2K with Cartesian coordinates
+
+`/draw_4k` - Draw an image in 4K 
+
+`/draw_center_4k` - Draw an image in 4K with Cartesian coordinates
 
 ## Examples
 
