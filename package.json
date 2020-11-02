@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./bot/bot.ts --exec ts-node",
     "debug": "nodemon --inspect ./bot/bot.ts",
-    "start": "ts-node ./bot/bot.ts"
+    "start": "ts-node ./bot/bot.ts",
+    "build": "tsc --outDir build bot/bot.ts"
   },
   "repository": {
     "type": "git",
