@@ -1,3 +1,4 @@
 node_modules/
 bot/*.png
 build/
+.env

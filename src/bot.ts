@@ -6,7 +6,11 @@ import { getColorGetterFunction } from './helpers';
 import { generateImage } from './imageGeneration';
 import { XY } from './types';
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const {
+  BOT_TOKEN
+} = process.env;
+
+const bot = new Telegraf(BOT_TOKEN)
 
 const helpText = `
 Commands:

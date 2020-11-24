@@ -120,3 +120,13 @@ which returns RGB color for each pixel coordinate.
 ```
 
 </details>
+
+## Running
+
+* `docker pull stepy/image-draw-bot:1.0`
+* `docker run -d --env-file .env --publish 8001:8080 stepy/image-draw-bot:1.0`
+
+`.env` file:
+```
+BOT_TOKEN=<token>
+```
