@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/bot.ts --exec ts-node",
+    "dev": "nodemon src/bot.ts --exec ts-node",
     "debug": "nodemon --inspect ./bot/bot.ts",
-    "start": "ts-node ./src/bot.ts"
+    "start": "node build/bot.js",
+    "build": "tsc --outDir build src/bot.ts"
   },
   "repository": {
     "type": "git",
