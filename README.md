@@ -1,5 +1,7 @@
 # ImageDrawBot
 
+Bot username: `@ImageDrawBot`
+
 A Telegram bot for generating images based on a supplied (JavaScript) function, 
 which returns RGB color for each pixel coordinate.
 
